@@ -14,6 +14,37 @@
 
 <!-- JSConfetti (para efectos de confeti) -->
 <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+
+<!-- Estilo para el botón de WhatsApp -->
+<style>
+  .whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 40px;
+    right: 40px;
+    background-color: #25d366;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 2px 2px 3px #999;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+  
+  .whatsapp-float:hover {
+    background-color: #128C7E;
+    transform: scale(1.1);
+  }
+  
+  .whatsapp-icon {
+    margin-top: 4px;
+  }
+</style>
 </head>
 <body>
   <!-- Preloader (se elimina automáticamente) -->
@@ -44,7 +75,13 @@
     </div>
   </header>
 
+  <!-- Botón flotante de WhatsApp -->
+  <a href="https://wa.me/3521167789" class="whatsapp-float" target="_blank">
+    <i class="fab fa-whatsapp whatsapp-icon"></i>
+  </a>
+
   <main>
+    <!-- Resto de tu contenido HTML existente... -->
     <!-- Sección Hero con efecto parallax -->
     <div class="section-content">
       <h2>Bienvenido a SIERRA</h2>
@@ -52,84 +89,8 @@
       <p class="welcome-subtext">Somos un proyecto académico enfocado en desarrollar herramientas prácticas para el sector agrícola mexicano.</p>
     </div>
 
-    <!-- Sección Nosotros con animación -->
-    <section id="nosotros1" class="hero-section section-2">
-  <div class="about-container">
-    <!-- Tarjeta principal con efecto libro abierto -->
-    <div class="about-card">
-      <div class="about-header">
-        <h2>¿Quiénes somos?</h2>
-        <div class="divider"></div>
-      </div>
-      
-      <div class="about-content">
-        <div class="about-text">
-          <p class="highlight">SIERRA es una iniciativa desarrollada dentro del Tecnológico Nacional de México, con el objetivo de brindar soluciones tecnológicas aplicadas al sector agrícola.</p>
-          
-          <p>Nuestro equipo está conformado por estudiantes comprometidos con el desarrollo rural, la ingeniería aplicada y la transformación digital del campo mexicano.</p>
-          
-          <p>Este proyecto nace de la necesidad de modernizar las prácticas agrícolas mediante herramientas accesibles y eficaces. Creemos que con el uso de sensores, automatización y conectividad, los agricultores pueden optimizar sus recursos, reducir costos operativos y aumentar el rendimiento de sus cultivos.</p>
-        </div>
-        
-        <div class="about-mission">
-          <!-- Misión con icono -->
-          <div class="mission-card">
-            <i class="fas fa-bullseye mission-icon"></i>
-            <h3>Misión</h3>
-            <p>Ofrecer servicios de educación superior tecnológica de calidad, con cobertura nacional, pertinente y equitativa, que coadyuven a la formación de profesionistas con valores y comprometidos con el desarrollo sustentable de la nación.</p>
-          </div>
-          
-          <!-- Visión con icono -->
-          <div class="mission-card">
-            <i class="fas fa-eye vision-icon"></i>
-            <h3>Visión</h3>
-            <p>Ser una institución de educación superior de excelencia académica, con reconocimiento nacional e internacional, y referente obligado del desarrollo tecnológico de México.</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Resto de tu código HTML... -->
     
-    <!-- Valores como chips flotantes -->
-    <div class="values-container">
-      <h3>Nuestros Valores</h3>
-      <div class="values-grid">
-        <div class="value-chip">Respeto</div>
-        <div class="value-chip">Responsabilidad</div>
-        <div class="value-chip">Honestidad</div>
-        <div class="value-chip">Solidaridad</div>
-        <div class="value-chip">Justicia</div>
-        <div class="value-chip">Inclusión</div>
-        <div class="value-chip">Equidad</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-    <!-- Productos con hover 3D -->
-    <section id="riego" class="product-section section-3">
-      <div class="section-content">
-        <h2>Sistemas de Riego Inteligente</h2>
-        <div class="product-grid">
-          <div class="product-card">
-            <img src="/images/riego1.jpg" alt="Kit Básico">
-            <div class="product-info">
-              <h3>Kit Básico</h3>
-              <p>Ideal para huertos familiares</p>
-              <a href="/tienda" class="btn-vermas">Ver más</a>
-            </div>
-          </div>
-          <!-- Repetir para otros productos -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Más secciones... -->
-
-    <!-- Footer con onda decorativa -->
-    <div class="footer-wave"></div>
-    <footer>
-      <!-- Contenido del footer -->
-    </footer>
   </main>
 
   <!-- Script para efectos interactivos -->
