@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proceso de Pago - SIERRA</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/checkout.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <section class="checkout-section">
+    <div class="checkout-container">
+      <div class="checkout-header">
+        <h2>Proceso de Pago</h2>
+        <p>Revisa tus datos y completa la información de pago para finalizar tu compra.</p>
+      </div>
+
+      <!-- Formulario de pago -->
+      <div class="checkout-form">
+        <h3>Información de Pago</h3>
+        
+        <form id="payment-form">
+          <div class="form-group">
+            <label for="card-name">Nombre en la tarjeta</label>
+            <input type="text" id="card-name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="card-number">Número de tarjeta</label>
+            <input type="text" id="card-number" maxlength="19" required>
+            <div class="card-icons">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/visa/visa-original.svg" class="card-icon" id="visa-icon">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mastercard/mastercard-original.svg" class="card-icon" id="mastercard-icon">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg" class="card-icon" id="amex-icon">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="card-expiry">Fecha de expiración</label>
+              <input type="text" id="card-expiry" placeholder="MM/AA" maxlength="5" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="card-cvv">CVV</label>
+              <input type="text" id="card-cvv" maxlength="4" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="card-address">Dirección de facturación</label>
+            <input type="text" id="card-address" required>
+          </div>
+          
+          <button type="submit" class="checkout-btn" id="submit-btn">
+            <i class="fas fa-lock"></i> Confirmar Pago
+          </button>
+        </form>
+        
+        <a href="/carrito" class="back-link">
+          <i class="fas fa-arrow-left"></i> Volver al carrito
+        </a>
+      </div>
+
+      <!-- Resumen del pedido -->
+      <div class="checkout-summary">
+        <h3>Resumen de tu Pedido</h3>
+        
+        <div id="order-summary">
+          <!-- Los productos se cargarán dinámicamente aquí -->
+        </div>
+        
+        <div class="summary-total">
+          <span>Total:</span>
+          <span id="order-total">$0.00</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Simulación de datos del carrito (deberías obtenerlos de tu carrito real)
+    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [
+      {
+        id: 1,
+        image: '/images/riego1.jpg',
+        title: 'Kit Básico de Riego',
+        price: 1299.00,
+        quantity: 1
+      },
+      {
+        id: 2,
+        image: '/images/ref2.jpg',
+        title: 'Sensor de Humedad',
+        price: 499.00,
+        quantity: 2
+      }
+    ];
+
+    // Calcular total
+    let subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const shipping = 150.00;
+    const discount = subtotal > 2000 ? subtotal * 0.1 : 0;
+    const total = subtotal + shipping - discount;
+
+    // Mostrar resumen del pedido
+    function renderOrderSummary() {
+      const orderSummary = document.getElementById('order-summary');
+      const orderTotal = document.getElementById('order-total');
+      
+      orderSummary.innerHTML = '';
+      
+      cartItems.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'summary-item';
+        itemElement.innerHTML = `
+          <img src="${item.image}" alt="${item.title}">
+          <div class="summary-item-info">
+            <div class="summary-item-title">${item.title}</div>
+            <div>${item.quantity} x $${item.price.toFixed(2)}</div>
+          </div>
+          <div class="summary-item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+        `;
+        orderSummary.appendChild(itemElement);
+      });
+      
+      // Añadir subtotal, envío y descuento
+      orderSummary.innerHTML += `
+        <div class="summary-item">
+          <span>Subtotal:</span>
+          <span>$${subtotal.toFixed(2)}</span>
+        </div>
+        <div class="summary-item">
+          <span>Envío:</span>
+          <span>$${shipping.toFixed(2)}</span>
+        </div>
+        ${discount > 0 ? `
+        <div class="summary-item">
+          <span>Descuento:</span>
+          <span>-$${discount.toFixed(2)}</span>
+        </div>
+        ` : ''}
+      `;
+      
+      orderTotal.textContent = `$${total.toFixed(2)}`;
+    }
+
+    // Formatear número de tarjeta
+    document.getElementById('card-number').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\s+/g, '');
+      if (value.length > 0) {
+        value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
+      }
+      e.target.value = value;
+      
+      // Detectar tipo de tarjeta
+      const visaIcon = document.getElementById('visa-icon');
+      const mastercardIcon = document.getElementById('mastercard-icon');
+      const amexIcon = document.getElementById('amex-icon');
+      
+      // Reset all
+      visaIcon.classList.remove('active');
+      mastercardIcon.classList.remove('active');
+      amexIcon.classList.remove('active');
+      
+      // Detect card type
+      if (/^4/.test(value)) {
+        visaIcon.classList.add('active');
+      } else if (/^5[1-5]/.test(value)) {
+        mastercardIcon.classList.add('active');
+      } else if (/^3[47]/.test(value)) {
+        amexIcon.classList.add('active');
+      }
+    });
+
+    // Formatear fecha de expiración
+    document.getElementById('card-expiry').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length > 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+      }
+      e.target.value = value;
+    });
+
+    // Validar formulario
+    document.getElementById('payment-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+          // Reemplaza el submit del formulario por:
+      document.getElementById('payment-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Simulación de pago exitoso
+        alert("🎉 ¡Pago simulado con éxito! (Proyecto escolar)");
+        window.location.href = "gracias.html";
+        
+        // Opcional: Guardar en localStorage
+        localStorage.setItem('ultimaCompra', new Date().toLocaleString());
+      });
+
+    
+
+    // Cargar resumen al inicio
+    document.addEventListener('DOMContentLoaded', renderOrderSummary);
+  </script>
+</body>
+</html>

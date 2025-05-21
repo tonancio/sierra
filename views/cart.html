@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Compras - SIERRA</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/cart.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <section class="cart-section">
+    <div class="cart-container">
+      <div class="cart-header">
+        <h2>Tu Carrito</h2>
+        <p>Consulta los productos que has agregado. Puedes modificar cantidades, eliminar elementos o proceder al pago.</p>
+      </div>
+
+      <div class="cart-content" id="cart-content">
+        <!-- Contenido dinámico del carrito -->
+        <div class="cart-items">
+          <table class="cart-table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="cart-items">
+              <!-- Los ítems del carrito se cargarán aquí -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cart-summary">
+          <h3>Resumen de Compra</h3>
+          
+          <div class="summary-row">
+            <span>Subtotal:</span>
+            <span id="cart-subtotal">$0.00</span>
+          </div>
+          
+          <div class="summary-row">
+            <span>Envío:</span>
+            <span id="cart-shipping">$0.00</span>
+          </div>
+          
+          <div class="summary-row">
+            <span>Descuento:</span>
+            <span id="cart-discount">-$0.00</span>
+          </div>
+          
+          <div class="summary-row total">
+            <span>Total:</span>
+            <span id="cart-total">$0.00</span>
+          </div>
+          
+          <button class="checkout-btn" id="checkout-btn">
+            <i class="fas fa-credit-card"></i> Proceder al Pago
+          </button>
+        </div>
+      </div>
+
+      <!-- Estado vacío (oculto inicialmente) -->
+      <div class="cart-empty" id="cart-empty" style="display: none;">
+        <i class="fas fa-shopping-cart"></i>
+        <h3>Tu carrito está vacío</h3>
+        <p>Aún no has agregado ningún producto a tu carrito de compras.</p>
+        <a href="/tienda">Ir a la Tienda</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Simulación de datos del carrito (en producción vendría de tu backend)
+    let cartItems = [
+      {
+        id: 1,
+        image: '/images/riego1.jpg',
+        title: 'Kit Básico de Riego',
+        sku: 'SKU-001',
+        price: 1299.00,
+        quantity: 1
+      },
+      {
+        id: 2,
+        image: '/images/ref2.jpg',
+        title: 'Sensor de Humedad',
+        sku: 'SKU-005',
+        price: 499.00,
+        quantity: 2
+      }
+    ];
+
+    // Función para renderizar el carrito
+    function renderCart() {
+      const cartItemsContainer = document.getElementById('cart-items');
+      const cartEmpty = document.getElementById('cart-empty');
+      const cartContent = document.getElementById('cart-content');
+      
+      if (cartItems.length === 0) {
+        cartContent.style.display = 'none';
+        cartEmpty.style.display = 'block';
+        return;
+      }
+      
+      cartContent.style.display = 'grid';
+      cartEmpty.style.display = 'none';
+      
+      // Calcular totales
+      let subtotal = 0;
+      let shipping = 150.00; // Costo fijo de envío
+      let discount = 0;
+      
+      // Limpiar contenedor
+      cartItemsContainer.innerHTML = '';
+      
+      // Añadir cada ítem al carrito
+      cartItems.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>
+            <div style="display: flex; align-items: center;">
+              <img src="${item.image}" alt="${item.title}" class="cart-item-img">
+              <div style="margin-left: 1rem;">
+                <div class="cart-item-title">${item.title}</div>
+                <div class="cart-item-sku">${item.sku}</div>
+              </div>
+            </div>
+          </td>
+          <td class="cart-item-price">$${item.price.toFixed(2)}</td>
+          <td>
+            <div class="cart-quantity">
+              <button onclick="updateQuantity(${item.id}, -1)">-</button>
+              <input type="number" value="${item.quantity}" min="1" onchange="updateQuantityInput(${item.id}, this.value)">
+              <button onclick="updateQuantity(${item.id}, 1)">+</button>
+            </div>
+          </td>
+          <td class="cart-item-price">$${itemTotal.toFixed(2)}</td>
+          <td>
+            <button class="cart-remove" onclick="removeItem(${item.id})">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </td>
+        `;
+        cartItemsContainer.appendChild(row);
+      });
+      
+      // Aplicar descuento si el subtotal es mayor a $2000
+      if (subtotal > 2000) {
+        discount = subtotal * 0.1; // 10% de descuento
+      }
+      
+      const total = subtotal + shipping - discount;
+      
+      // Actualizar resumen
+      document.getElementById('cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+      document.getElementById('cart-shipping').textContent = `$${shipping.toFixed(2)}`;
+      document.getElementById('cart-discount').textContent = `-$${discount.toFixed(2)}`;
+      document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+    }
+    
+    // Funciones para manipular el carrito
+    function updateQuantity(id, change) {
+      const item = cartItems.find(item => item.id === id);
+      if (item) {
+        item.quantity += change;
+        if (item.quantity < 1) item.quantity = 1;
+        renderCart();
+      }
+    }
+    
+    function updateQuantityInput(id, value) {
+      const quantity = parseInt(value);
+      if (!isNaN(quantity) && quantity > 0) {
+        const item = cartItems.find(item => item.id === id);
+        if (item) {
+          item.quantity = quantity;
+          renderCart();
+        }
+      }
+    }
+    
+    function removeItem(id) {
+      cartItems = cartItems.filter(item => item.id !== id);
+      renderCart();
+    }
+    
+    // Botón de checkout
+    document.getElementById('checkout-btn').addEventListener('click', function() {
+  if (cartItems.length > 0) {
+    // Guardar los items en localStorage para pasarlos al checkout
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    window.location.href = '/checkout';
+  } else {
+    alert('Tu carrito está vacío');
+  }
+});
+    
+    // Inicializar carrito al cargar la página
+    document.addEventListener('DOMContentLoaded', renderCart);
+  </script>
+</body>
+</html>

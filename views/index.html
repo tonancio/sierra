@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIERRA</title>
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- JSConfetti (para efectos de confeti) -->
+<script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+</head>
+<body>
+  <!-- Preloader (se elimina automáticamente) -->
+  
+  <!-- Navbar mejorado -->
+  <header class="navbar">
+    <div class="nav-container">
+      <nav class="nav-left">
+        <a href="#inicio">Inicio</a>
+        <a href="#nosotros1">Nosotros</a>
+        <a href="#riego">Riego</a>
+        <a href="#refacciones">Refacciones</a>
+      </nav>
+      <div class="nav-logo">
+        <img src="/images/logo.jpg" alt="SIERRA Logo" class="floating" />
+      </div>
+      <nav class="nav-right">
+        <a href="#soporte">Soporte</a>
+        <a href="#contacto">Contacto</a>
+        <a href="/account" class="user-widget">
+          <img src="/images/usuario.png" alt="Usuario" class="nav-icon" />
+          <span>Perfil</span>
+        </a>  
+        <a href="/carrito" class="icon-link">
+          <img src="/images/carrito.png" alt="Carrito" class="nav-icon" />
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Sección Hero con efecto parallax -->
+    <div class="section-content">
+      <h2>Bienvenido a SIERRA</h2>
+      <p class="welcome-text">En SIERRA, creemos en la evolución del campo mediante la tecnología. Nuestra misión es ofrecer soluciones inteligentes que permitan a los agricultores automatizar procesos clave como el riego, el monitoreo ambiental y la administración de recursos.</p>
+      <p class="welcome-subtext">Somos un proyecto académico enfocado en desarrollar herramientas prácticas para el sector agrícola mexicano.</p>
+    </div>
+
+    <!-- Sección Nosotros con animación -->
+    <section id="nosotros1" class="hero-section section-2">
+  <div class="about-container">
+    <!-- Tarjeta principal con efecto libro abierto -->
+    <div class="about-card">
+      <div class="about-header">
+        <h2>¿Quiénes somos?</h2>
+        <div class="divider"></div>
+      </div>
+      
+      <div class="about-content">
+        <div class="about-text">
+          <p class="highlight">SIERRA es una iniciativa desarrollada dentro del Tecnológico Nacional de México, con el objetivo de brindar soluciones tecnológicas aplicadas al sector agrícola.</p>
+          
+          <p>Nuestro equipo está conformado por estudiantes comprometidos con el desarrollo rural, la ingeniería aplicada y la transformación digital del campo mexicano.</p>
+          
+          <p>Este proyecto nace de la necesidad de modernizar las prácticas agrícolas mediante herramientas accesibles y eficaces. Creemos que con el uso de sensores, automatización y conectividad, los agricultores pueden optimizar sus recursos, reducir costos operativos y aumentar el rendimiento de sus cultivos.</p>
+        </div>
+        
+        <div class="about-mission">
+          <!-- Misión con icono -->
+          <div class="mission-card">
+            <i class="fas fa-bullseye mission-icon"></i>
+            <h3>Misión</h3>
+            <p>Ofrecer servicios de educación superior tecnológica de calidad, con cobertura nacional, pertinente y equitativa, que coadyuven a la formación de profesionistas con valores y comprometidos con el desarrollo sustentable de la nación.</p>
+          </div>
+          
+          <!-- Visión con icono -->
+          <div class="mission-card">
+            <i class="fas fa-eye vision-icon"></i>
+            <h3>Visión</h3>
+            <p>Ser una institución de educación superior de excelencia académica, con reconocimiento nacional e internacional, y referente obligado del desarrollo tecnológico de México.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Valores como chips flotantes -->
+    <div class="values-container">
+      <h3>Nuestros Valores</h3>
+      <div class="values-grid">
+        <div class="value-chip">Respeto</div>
+        <div class="value-chip">Responsabilidad</div>
+        <div class="value-chip">Honestidad</div>
+        <div class="value-chip">Solidaridad</div>
+        <div class="value-chip">Justicia</div>
+        <div class="value-chip">Inclusión</div>
+        <div class="value-chip">Equidad</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- Productos con hover 3D -->
+    <section id="riego" class="product-section section-3">
+      <div class="section-content">
+        <h2>Sistemas de Riego Inteligente</h2>
+        <div class="product-grid">
+          <div class="product-card">
+            <img src="/images/riego1.jpg" alt="Kit Básico">
+            <div class="product-info">
+              <h3>Kit Básico</h3>
+              <p>Ideal para huertos familiares</p>
+              <a href="/tienda" class="btn-vermas">Ver más</a>
+            </div>
+          </div>
+          <!-- Repetir para otros productos -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Más secciones... -->
+
+    <!-- Footer con onda decorativa -->
+    <div class="footer-wave"></div>
+    <footer>
+      <!-- Contenido del footer -->
+    </footer>
+  </main>
+
+  <!-- Script para efectos interactivos -->
+  <script>
+    // Efecto navbar al hacer scroll
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Animación de confeti (requiere librería JSConfetti)
+    function addToCart() {
+      // Tu lógica de carrito aquí
+      if (typeof JSConfetti !== 'undefined') {
+        new JSConfetti().addConfetti({
+          emojis: ['🛒', '🌱', '💧', '✨'],
+          emojiSize: 30,
+          confettiNumber: 30,
+        });
+      }
+    }
+  </script>
+</body>
+</html>

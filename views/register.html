@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro | SIERRA</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/auth.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="auth-page">
+  <div class="auth-box">
+    <h2><i class="fas fa-user-plus"></i>Crear cuenta</h2>
+    <p>Regístrate para controlar tus sistemas de riego inteligente</p>
+    
+    <form action="/register" method="POST" id="registerForm">
+      <div class="form-grid">
+        <div class="form-group">
+          <input type="text" id="nombre" name="nombre" placeholder=" " required>
+          <label for="nombre">Nombre</label>
+        </div>
+        
+        <div class="form-group">
+          <input type="text" id="apellidos" name="apellidos" placeholder=" " required>
+          <label for="apellidos">Apellidos</label>
+        </div>
+        
+        <div class="form-group full-width">
+          <input type="email" id="correo" name="correo" placeholder=" " required>
+          <label for="correo">Correo electrónico</label>
+        </div>
+        
+        <div class="form-group">
+          <input type="password" id="contraseña" name="contraseña" placeholder=" " required>
+          <label for="contraseña">Contraseña</label>
+          <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+        </div>
+        
+        <div class="form-group">
+          <input type="password" id="confirmar" name="confirmar" placeholder=" " required>
+          <label for="confirmar">Confirmar contraseña</label>
+          <i class="fas fa-eye password-toggle" id="toggleConfirm"></i>
+        </div>
+        
+        <div class="password-strength">
+          <div class="strength-bar" id="strengthBar"></div>
+        </div>
+        
+        <div class="requirements">
+          <div class="requirement" id="length"><i class="far fa-circle"></i> Mínimo 8 caracteres</div>
+          <div class="requirement" id="uppercase"><i class="far fa-circle"></i> 1 letra mayúscula</div>
+          <div class="requirement" id="number"><i class="far fa-circle"></i> 1 número</div>
+          <div class="requirement" id="special"><i class="far fa-circle"></i> 1 carácter especial</div>
+        </div>
+        
+        <div class="form-group full-width">
+          <input type="text" id="direccion" name="direccion" placeholder=" " required>
+          <label for="direccion">Dirección</label>
+        </div>
+        
+        <div class="form-group full-width">
+          <input type="tel" id="telefono" name="telefono" placeholder=" " required>
+          <label for="telefono">Teléfono</label>
+        </div>
+        
+        <button type="submit" class="auth-btn">Registrarse</button>
+        
+        <div class="auth-links">
+          <p>¿Ya tienes cuenta? <a href="/login">Inicia sesión</a></p>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Mostrar/ocultar contraseña
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#contraseña');
+    const toggleConfirm = document.querySelector('#toggleConfirm');
+    const confirmPassword = document.querySelector('#confirmar');
+    
+    togglePassword.addEventListener('click', function() {
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      this.classList.toggle('fa-eye-slash');
+    });
+    
+    toggleConfirm.addEventListener('click', function() {
+      const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+      confirmPassword.setAttribute('type', type);
+      this.classList.toggle('fa-eye-slash');
+    });
+
+    // Validación de contraseña en tiempo real
+    password.addEventListener('input', function() {
+      const value = this.value;
+      const strengthBar = document.getElementById('strengthBar');
+      
+      // Verificar requisitos
+      const hasLength = value.length >= 8;
+      const hasUppercase = /[A-Z]/.test(value);
+      const hasNumber = /\d/.test(value);
+      const hasSpecial = /[!@#$%^&*]/.test(value);
+      
+      // Actualizar íconos
+      document.getElementById('length').className = hasLength ? 'requirement valid' : 'requirement invalid';
+      document.getElementById('uppercase').className = hasUppercase ? 'requirement valid' : 'requirement invalid';
+      document.getElementById('number').className = hasNumber ? 'requirement valid' : 'requirement invalid';
+      document.getElementById('special').className = hasSpecial ? 'requirement valid' : 'requirement invalid';
+      
+      // Calcular fortaleza
+      let strength = 0;
+      if (hasLength) strength += 25;
+      if (hasUppercase) strength += 25;
+      if (hasNumber) strength += 25;
+      if (hasSpecial) strength += 25;
+      
+      // Actualizar barra
+      strengthBar.style.width = strength + '%';
+      
+      // Cambiar color
+      if (strength < 50) {
+        strengthBar.style.backgroundColor = '#e74c3c';
+      } else if (strength < 75) {
+        strengthBar.style.backgroundColor = '#f39c12';
+      } else {
+        strengthBar.style.backgroundColor = '#2ecc71';
+      }
+    });
+
+    // Validación de formulario
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      const password = document.getElementById('contraseña').value;
+      const confirm = document.getElementById('confirmar').value;
+      
+      if (password !== confirm) {
+        alert('❌ Las contraseñas no coinciden');
+        e.preventDefault();
+        return;
+      }
+      
+      // Verificar si todos los requisitos están cumplidos
+      const requirements = document.querySelectorAll('.requirement.valid');
+      if (requirements.length < 4) {
+        alert('⚠️ La contraseña no cumple con todos los requisitos');
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>

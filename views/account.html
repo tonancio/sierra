@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Cuenta - SIERRA</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/profile.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <section class="profile-section">
+    <div class="profile-container">
+      <!-- Sidebar -->
+      <aside class="profile-sidebar">
+        <img src="/images/user-avatar.jpg" alt="Avatar" class="profile-avatar" id="user-avatar">
+        <h2 class="profile-username" id="nombre-usuario">Usuario</h2>
+        <p class="profile-useremail" id="user-email">usuario@ejemplo.com</p>
+        <span class="profile-usertype" id="user-type">Usuario Premium</span>
+        
+        <ul class="profile-menu">
+          <li><a href="#" class="active"><i class="fas fa-user"></i> Mi perfil</a></li>
+          <li><a href="#"><i class="fas fa-shopping-bag"></i> Mis pedidos</a></li>
+          <li><a href="#"><i class="fas fa-tint"></i> Mis sistemas</a></li>
+          <li><a href="#"><i class="fas fa-cog"></i> Configuración</a></li>
+          <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+        </ul>
+      </aside>
+
+      <!-- Contenido principal -->
+      <main class="profile-content">
+        <div class="profile-header">
+          <h1 class="profile-title">Mi Perfil</h1>
+          <button class="profile-edit-btn" id="edit-profile">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+        </div>
+
+        <!-- Sección de información personal -->
+        <div class="profile-details">
+          <h3>Información Personal</h3>
+          
+          <div class="detail-group">
+            <span class="detail-label">Nombre completo:</span>
+            <span class="detail-value" id="nombre-completo">Juan Pérez García</span>
+          </div>
+          
+          <div class="detail-group">
+            <span class="detail-label">Correo electrónico:</span>
+            <span class="detail-value" id="correo">juan.perez@example.com</span>
+          </div>
+          
+          <div class="detail-group">
+            <span class="detail-label">Teléfono:</span>
+            <span class="detail-value" id="telefono">+52 55 1234 5678</span>
+          </div>
+          
+          <div class="detail-group">
+            <span class="detail-label">Dirección:</span>
+            <span class="detail-value" id="direccion">Calle Falsa 123, Col. Centro, CDMX</span>
+          </div>
+        </div>
+
+        <!-- Sección de productos adquiridos -->
+        <div class="profile-products">
+          <h3>Mis Sistemas Adquiridos</h3>
+          
+          <div class="products-grid">
+            <!-- Producto 1 -->
+            <div class="product-card">
+              <img src="/images/riego2.jpg" alt="Kit Avanzado" class="product-image">
+              <div class="product-info">
+                <h4 class="product-name">Kit Avanzado de Riego</h4>
+                <p class="product-date">Adquirido: 15/03/2023</p>
+                <span class="product-status status-delivered">Instalado</span>
+              </div>
+            </div>
+            
+            <!-- Producto 2 -->
+            <div class="product-card">
+              <img src="/images/ref1.jpg" alt="Electroválvula" class="product-image">
+              <div class="product-info">
+                <h4 class="product-name">Electroválvula 1/2"</h4>
+                <p class="product-date">Adquirido: 02/05/2023</p>
+                <span class="product-status status-pending">En camino</span>
+              </div>
+            </div>
+            
+            <!-- Producto 3 -->
+            <div class="product-card">
+              <img src="/images/riego3.jpg" alt="Kit Industrial" class="product-image">
+              <div class="product-info">
+                <h4 class="product-name">Kit Industrial</h4>
+                <p class="product-date">Adquirido: 22/01/2023</p>
+                <span class="product-status status-delivered">Activo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <script>
+    // Cargar datos del usuario
+    fetch('/api/usuario')
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          // Datos básicos
+          document.getElementById('nombre-usuario').textContent = data.nombre || 'Usuario';
+          document.getElementById('user-email').textContent = data.correo || 'usuario@ejemplo.com';
+          document.getElementById('user-type').textContent = data.tipo === 'admin' ? 'Administrador' : 'Usuario Standard';
+          
+          // Detalles del perfil
+          document.getElementById('nombre-completo').textContent = `${data.nombre || ''} ${data.apellidos || ''}`.trim();
+          document.getElementById('correo').textContent = data.correo || 'No especificado';
+          document.getElementById('telefono').textContent = data.telefono || 'No especificado';
+          document.getElementById('direccion').textContent = data.direccion || 'No especificada';
+          
+          // Avatar (si existe en los datos)
+          if (data.avatar) {
+            document.getElementById('user-avatar').src = data.avatar;
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error al cargar datos del usuario:', error);
+      });
+
+    // Botón de editar
+    document.getElementById('edit-profile').addEventListener('click', function() {
+      alert('Funcionalidad de edición en desarrollo 🚧');
+      // Aquí podrías implementar un formulario de edición
+    });
+  </script>
+</body>
+</html>
