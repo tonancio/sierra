@@ -28,13 +28,13 @@ app.use(bodyParser.json());
 
 // 3. Configuración de sesión
 let redisClient;
-if (process.env.NODE_ENV === 'production') {
+/*if (process.env.NODE_ENV === 'production') {
   redisClient = createClient({
     url: process.env.REDIS_URL,
     legacyMode: true
   });
   redisClient.connect().catch(console.error);
-}
+}*/
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'clave-super-secreta',
