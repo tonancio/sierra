@@ -76,9 +76,6 @@
   </header>
 
   <!-- Botón flotante de WhatsApp -->
-  <a href="https://wa.me/3521167789" class="whatsapp-float" target="_blank">
-    <i class="fab fa-whatsapp whatsapp-icon"></i>
-  </a>
 
   <main>
     <!-- Resto de tu contenido HTML existente... -->
@@ -113,5 +110,50 @@
       }
     }
   </script>
+
+<!-- Botón flotante de WhatsApp - Versión corregida -->
+<a href="https://wa.me/5211234567890" class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+<style>
+  /* Estilos garantizados para el botón */
+  .whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 40px;
+    right: 40px;
+    background-color: #25d366;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+  }
+
+  .whatsapp-float:hover {
+    background-color: #128C7E;
+    transform: scale(1.1);
+    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .whatsapp-float i {
+    margin-left: 2px; /* Ajuste fino del icono */
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+</style>
+
 </body>
 </html>
