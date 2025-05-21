@@ -18,7 +18,6 @@
       </div>
 
       <div class="cart-content" id="cart-content">
-        <!-- Contenido dinámico del carrito -->
         <div class="cart-items">
           <table class="cart-table">
             <thead>
@@ -65,7 +64,7 @@
         </div>
       </div>
 
-      <!-- Estado vacío (oculto inicialmente) -->
+      <!-- Estado vacío -->
       <div class="cart-empty" id="cart-empty" style="display: none;">
         <i class="fas fa-shopping-cart"></i>
         <h3>Tu carrito está vacío</h3>
@@ -76,8 +75,8 @@
   </section>
 
   <script>
-    // Simulación de datos del carrito (en producción vendría de tu backend)
-    let cartItems = [
+    // Productos de ejemplo para demostración
+    const demoProducts = [
       {
         id: 1,
         image: '/images/riego1.jpg',
@@ -92,9 +91,32 @@
         title: 'Sensor de Humedad',
         sku: 'SKU-005',
         price: 499.00,
-        quantity: 2
+        quantity: 1
       }
     ];
+
+    // Obtener el carrito de localStorage o cargar productos demo si está vacío
+    let cartItems = JSON.parse(localStorage.getItem('cartItems'));
+    
+    if (!cartItems || cartItems.length === 0) {
+      cartItems = [...demoProducts]; // Copiar los productos demo
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    }
+    
+    // Actualizar el contador del carrito en el navbar (si existe)
+    function updateCartCounter() {
+      const cartCounter = document.getElementById('cart-counter');
+      if (cartCounter) {
+        const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+        cartCounter.textContent = totalItems;
+      }
+    }
+
+    // Función para guardar el carrito en localStorage
+    function saveCart() {
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      updateCartCounter();
+    }
 
     // Función para renderizar el carrito
     function renderCart() {
@@ -105,6 +127,7 @@
       if (cartItems.length === 0) {
         cartContent.style.display = 'none';
         cartEmpty.style.display = 'block';
+        saveCart();
         return;
       }
       
@@ -165,6 +188,8 @@
       document.getElementById('cart-shipping').textContent = `$${shipping.toFixed(2)}`;
       document.getElementById('cart-discount').textContent = `-$${discount.toFixed(2)}`;
       document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+      
+      saveCart();
     }
     
     // Funciones para manipular el carrito
@@ -195,17 +220,18 @@
     
     // Botón de checkout
     document.getElementById('checkout-btn').addEventListener('click', function() {
-  if (cartItems.length > 0) {
-    // Guardar los items en localStorage para pasarlos al checkout
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    window.location.href = '/checkout';
-  } else {
-    alert('Tu carrito está vacío');
-  }
-});
+      if (cartItems.length > 0) {
+        window.location.href = '/checkout';
+      } else {
+        alert('Tu carrito está vacío');
+      }
+    });
     
     // Inicializar carrito al cargar la página
-    document.addEventListener('DOMContentLoaded', renderCart);
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCart();
+      updateCartCounter();
+    });
   </script>
 </body>
 </html>
