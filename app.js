@@ -1,21 +1,16 @@
 require('dotenv').config();
 const express = require('express');
-const session = require('express-session');
-const bodyParser = require('body-parser');
 const path = require('path');
 const helmet = require('helmet');
 const compression = require('compression');
-// const RedisStore = require('connect-redis')(session);
-// const { createClient } = require('redis');
 
 const app = express();
-const userController = require('./controllers/userController'); // ✅ Asegúrate que existe este archivo
 
-// 1. Seguridad
+// 1. Seguridad básica (puedes mantener esto)
 app.use(helmet());
 app.use(compression());
 
-// 2. Middlewares
+// 2. Middleware para archivos estáticos
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: '1y',
   setHeaders: (res, filePath) => {
@@ -24,89 +19,43 @@ app.use(express.static(path.join(__dirname, 'public'), {
     }
   }
 }));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
-// 3. Sesiones
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'clave-super-secreta',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000,
-    sameSite: 'lax'
-  }
-}));
-
-// 4. Usuario actual en `res.locals`
-app.use((req, res, next) => {
-  res.locals.user = req.session.user || null;
-  next();
-});
-
-// 5. Vistas HTML
+// 3. Vistas HTML (simplificado)
 const viewsPath = path.join(__dirname, 'views');
-const staticRoutes = [
+const routes = [
   { path: '/', file: 'index.html' },
   { path: '/login', file: 'login.html' },
   { path: '/register', file: 'register.html' },
   { path: '/tienda', file: 'tienda.html' },
-  { path: '/checkout', file: 'checkout.html' }
+  { path: '/checkout', file: 'checkout.html' },
+  { path: '/account', file: 'account.html' }, // Ahora accesible sin login
+  { path: '/admin', file: 'admin.html' }, // Ahora accesible sin restricciones
+  { path: '/carrito', file: 'cart.html' } // Ahora accesible sin login
 ];
 
-staticRoutes.forEach(route => {
+routes.forEach(route => {
   app.get(route.path, (req, res) => {
     res.sendFile(path.join(viewsPath, route.file));
   });
 });
 
-// 6. Rutas protegidas
-app.get('/account', (req, res) => {
-  if (!req.session.user) return res.redirect('/login');
-  res.sendFile(path.join(viewsPath, 'account.html'));
+// Eliminadas todas las rutas de API y autenticación
+
+// 4. Redirecciones básicas (opcional)
+app.get('/user', (req, res) => res.redirect('/account'));
+app.get('/logout', (req, res) => res.redirect('/'));
+
+// 5. Manejo de errores básico
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(viewsPath, '404.html'));
 });
 
-app.get('/admin', (req, res) => {
-  if (req.session.user?.tipo !== 'admin') {
-    return res.status(403).send('Acceso no autorizado');
-  }
-  res.sendFile(path.join(viewsPath, 'admin.html'));
-});
-
-app.get('/carrito', (req, res) => {
-  if (!req.session.user) return res.redirect('/login');
-  res.sendFile(path.join(viewsPath, 'cart.html'));
-});
-
-// 7. API de sesión
-app.get('/api/usuario', (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).json({ error: 'No autenticado' });
-  }
-  res.json(req.session.user);
-});
-
-app.get('/logout', (req, res) => {
-  req.session.destroy(() => res.redirect('/'));
-});
-
-app.get('/user', (req, res) => {
-  res.redirect(req.session.user ? '/account' : '/login');
-});
-
-// ✅ 8. Rutas POST funcionales
-app.post('/login', userController.login);
-app.post('/register', userController.registrar);
-
-// 9. Errores
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Algo salió mal!');
 });
 
-// 10. Arrancar servidor
+// 6. Arrancar servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

@@ -1,20 +1,18 @@
 const mysql = require('mysql2');
 
-// Crea la conexión con tu base de datos
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',          // Cambia esto si tu usuario es otro
-  password: '030417',          // Pon la contraseña que tengas configurada
-  database: 'sierra_db'  // Debe coincidir con la base de datos que creaste
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
 });
 
-// Intenta conectar
-connection.connect((err) => {
+connection.connect(err => {
   if (err) {
-    console.error('Error al conectar a la base de datos:', err);
-    return;
+    console.error('❌ Error al conectar a MySQL:', err);
+  } else {
+    console.log('🟢 Conectado a MySQL correctamente.');
   }
-  console.log('🟢 Conexión a MySQL establecida correctamente.');
 });
 
 module.exports = connection;
