@@ -9,33 +9,25 @@ const compression = require('compression');
 // const { createClient } = require('redis');
 
 const app = express();
+const userController = require('./controllers/userController'); // ✅ Asegúrate que existe este archivo
 
-// 1. Configuración de Seguridad
+// 1. Seguridad
 app.use(helmet());
 app.use(compression());
 
-// 2. Middlewares básicos
+// 2. Middlewares
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: '1y',
-  setHeaders: (res, path) => {
-    if (path.endsWith('.html')) {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html')) {
       res.setHeader('Cache-Control', 'no-cache');
     }
   }
-})); // <-- Error corregido aquí
+}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// 3. Configuración de sesión
-let redisClient;
-/*if (process.env.NODE_ENV === 'production') {
-  redisClient = createClient({
-    url: process.env.REDIS_URL,
-    legacyMode: true
-  });
-  redisClient.connect().catch(console.error);
-}*/
-
+// 3. Sesiones
 app.use(session({
   secret: process.env.SESSION_SECRET || 'clave-super-secreta',
   resave: false,
@@ -48,14 +40,13 @@ app.use(session({
   }
 }));
 
-
-// 4. Middleware de usuario
+// 4. Usuario actual en `res.locals`
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   next();
 });
 
-// 5. Rutas estáticas
+// 5. Vistas HTML
 const viewsPath = path.join(__dirname, 'views');
 const staticRoutes = [
   { path: '/', file: 'index.html' },
@@ -78,7 +69,7 @@ app.get('/account', (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-  if (req.session.user?.tipo !== 'admin') { // <-- Error corregido aquí
+  if (req.session.user?.tipo !== 'admin') {
     return res.status(403).send('Acceso no autorizado');
   }
   res.sendFile(path.join(viewsPath, 'admin.html'));
@@ -89,7 +80,7 @@ app.get('/carrito', (req, res) => {
   res.sendFile(path.join(viewsPath, 'cart.html'));
 });
 
-// 7. API Endpoints
+// 7. API de sesión
 app.get('/api/usuario', (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ error: 'No autenticado' });
@@ -98,24 +89,25 @@ app.get('/api/usuario', (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.redirect('/');
-  });
+  req.session.destroy(() => res.redirect('/'));
 });
 
 app.get('/user', (req, res) => {
   res.redirect(req.session.user ? '/account' : '/login');
 });
 
-// 8. Manejo de errores
+// ✅ 8. Rutas POST funcionales
+app.post('/login', userController.login);
+app.post('/register', userController.registrar);
+
+// 9. Errores
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Algo salió mal!');
 });
 
-// 9. Iniciar servidor
+// 10. Arrancar servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor en modo ${process.env.NODE_ENV || 'development'}`);
-  console.log(`Escuchando en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
