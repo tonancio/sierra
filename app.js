@@ -5,8 +5,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const helmet = require('helmet');
 const compression = require('compression');
-const RedisStore = require('connect-redis')(session);
-const { createClient } = require('redis');
+// const RedisStore = require('connect-redis')(session);
+// const { createClient } = require('redis');
 
 const app = express();
 
@@ -37,9 +37,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use(session({
-  store: process.env.NODE_ENV === 'production' ? 
-    new RedisStore({ client: redisClient }) : 
-    null,
   secret: process.env.SESSION_SECRET || 'clave-super-secreta',
   resave: false,
   saveUninitialized: false,
@@ -50,6 +47,7 @@ app.use(session({
     sameSite: 'lax'
   }
 }));
+
 
 // 4. Middleware de usuario
 app.use((req, res, next) => {
