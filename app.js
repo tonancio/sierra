@@ -1,12 +1,12 @@
-require('dotenv').config(); // Para variables de entorno
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
-const helmet = require('helmet'); // Seguridad
-const compression = require('compression'); // Compresión
-const RedisStore = require('connect-redis')(session); // Para sesiones en producción
-const { createClient } = require('redis'); // Cliente Redis
+const helmet = require('helmet');
+const compression = require('compression');
+const RedisStore = require('connect-redis')(session);
+const { createClient } = require('redis');
 
 const app = express();
 
@@ -16,17 +16,17 @@ app.use(compression());
 
 // 2. Middlewares básicos
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: '1y', // Cache estático
+  maxAge: '1y',
   setHeaders: (res, path) => {
     if (path.endsWith('.html')) {
       res.setHeader('Cache-Control', 'no-cache');
     }
   }
-});
+})); // <-- Error corregido aquí
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// 3. Configuración de sesión (adaptable a producción/desarrollo)
+// 3. Configuración de sesión
 let redisClient;
 if (process.env.NODE_ENV === 'production') {
   redisClient = createClient({
@@ -39,21 +39,20 @@ if (process.env.NODE_ENV === 'production') {
 app.use(session({
   store: process.env.NODE_ENV === 'production' ? 
     new RedisStore({ client: redisClient }) : 
-    null, // En desarrollo usa MemoryStore
+    null,
   secret: process.env.SESSION_SECRET || 'clave-super-secreta',
   resave: false,
-  saveUninitialized: false, // Cambiado a false por seguridad
+  saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // HTTPS en producción
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000, // 1 día
+    maxAge: 24 * 60 * 60 * 1000,
     sameSite: 'lax'
   }
 }));
 
 // 4. Middleware de usuario
 app.use((req, res, next) => {
-  // Simulación de usuario - Reemplazar con DB en producción
   res.locals.user = req.session.user || null;
   next();
 });
@@ -81,7 +80,7 @@ app.get('/account', (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-  if (!req.session.user?.tipo === 'admin') {
+  if (req.session.user?.tipo !== 'admin') { // <-- Error corregido aquí
     return res.status(403).send('Acceso no autorizado');
   }
   res.sendFile(path.join(viewsPath, 'admin.html'));
